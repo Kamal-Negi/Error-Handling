@@ -8,32 +8,36 @@
 import Foundation
 import UIKit
 
-struct ErrorViewState {
-    var errorMessage: String  = ""
-    var errorViewImage: String = ""
-    var errorViewBackgroundColor: UIColor = .white
-    var crossButtonImage: String = ""
-    var crossButtonAction: (()->())?
-    var errorType: ErrorType = .displayAndDisapper
-    var animationDuration: Double = 2
-    var disapperingDuration: Double = 5
-    var errorLabelColor: UIColor = .white
-    var errorLabelFont: UIFont = .systemFont(ofSize: 12)
-    var alignement: ErrorAlignement = .center
+public struct ErrorState {
+    public struct ErrorViewState {
+        public var errorMessage: String  = ""
+        public var errorViewImage: String = ""
+        public var errorViewBackgroundColor: UIColor = .white
+        public var crossButtonImage: String = ""
+        public var crossButtonAction: (()->())?
+        public var errorType: ErrorType = .displayAndDisapper
+        public var animationDuration: Double = 2
+        public var disapperingDuration: Double = 5
+        public var errorLabelColor: UIColor = .white
+        public var errorLabelFont: UIFont = .systemFont(ofSize: 12)
+        public var alignement: ErrorAlignement = .center
+    }
+    public var state = ErrorViewState()
 }
 
-enum ErrorType {
+
+public enum ErrorType {
     case persistant
     case displayAndDisapper
     case userInteraction
 }
 
-enum ErrorAlignement {
+public enum ErrorAlignement {
     case top
     case center
 }
 
-class ErrorHandling: UIView {
+open class ErrorHandling: UIView {
     
     @IBOutlet weak var errorViewStackView: UIStackView!
     
@@ -43,18 +47,18 @@ class ErrorHandling: UIView {
     
     @IBOutlet weak var crossButton: UIButton!
     
-    var errorState = ErrorViewState()
+    public var errorState = ErrorState()
     
-    override func awakeFromNib() {
+    public override func awakeFromNib() {
         super.awakeFromNib()
     }
     
-    override init(frame: CGRect) {
+    public override init(frame: CGRect) {
         super.init(frame: frame)
-        commonInit()
+       commonInit()
     }
     
-    required init?(coder aDecoder: NSCoder) {
+    required public init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         commonInit()
     }
@@ -68,34 +72,32 @@ class ErrorHandling: UIView {
     }
     
     func configureView() {
-        errorMessageLabel.text = errorState.errorMessage
-        errorMessageLabel.font = errorState.errorLabelFont
-        errorMessageLabel.textColor = errorState.errorLabelColor
-        errorImageView.image = UIImage(named: errorState.errorViewImage)
+        errorMessageLabel.text = errorState.state.errorMessage
+        errorMessageLabel.font = errorState.state.errorLabelFont
+        errorMessageLabel.textColor = errorState.state.errorLabelColor
+        errorImageView.image = UIImage(named: errorState.state.errorViewImage)
         crossButton.setTitle("", for: .normal)
-        crossButton.setImage(UIImage(named: errorState.crossButtonImage), for: .normal)
+        crossButton.setImage(UIImage(named: errorState.state.crossButtonImage), for: .normal)
         crossButton.addTarget(self, action: #selector(crossButtonTapped), for: .touchUpInside)
-        errorViewStackView.backgroundColor = errorState.errorViewBackgroundColor
-        
-//        errorViewStackView.alignment = errorState.
+        errorViewStackView.backgroundColor = errorState.state.errorViewBackgroundColor
     }
     
     @objc func crossButtonTapped() {
-        if let crossButtonTap = errorState.crossButtonAction {
+        if let crossButtonTap = errorState.state.crossButtonAction {
             crossButtonTap()
         }
     }
     
     func animateErrorView() {
         let newViewWidth = 0
-        UIView.animate(withDuration: errorState.animationDuration) {
+        UIView.animate(withDuration: errorState.state.animationDuration) {
             self.errorViewStackView.frame = CGRect(x: 0, y: 0, width: newViewWidth, height: newViewWidth)
             self.errorViewStackView.center = self.center
         }
     }
     
     func disapperViewAnimation() {
-        UIView.animate(withDuration: errorState.disapperingDuration) {
+        UIView.animate(withDuration: errorState.state.disapperingDuration) {
             self.isHidden = true
         } completion: { _ in
             self.crossButtonTapped()
