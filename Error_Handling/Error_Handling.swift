@@ -35,8 +35,6 @@ enum ErrorAlignement {
 
 class ErrorHandling: UIView {
     
-    @IBOutlet weak var contentView: UIView!
-    
     @IBOutlet weak var errorViewStackView: UIStackView!
     
     @IBOutlet weak var errorImageView: UIImageView!
@@ -62,9 +60,10 @@ class ErrorHandling: UIView {
     }
     
     private func commonInit() {
-        Bundle.main.loadNibNamed("ErrorHandling", owner: self, options: nil)
-        self.addSubview(contentView)
-        contentView.frame = CGRect(x: bounds.origin.x, y: bounds.origin.y, width: UIScreen.main.bounds.width, height: bounds.height)
+        let view = Bundle.main.loadNibNamed("Error_Handling", owner: self, options: nil)![0] as! UIView
+        self.addSubview(view)
+        view.frame = self.bounds
+        view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         animateErrorView()
     }
     
@@ -91,13 +90,13 @@ class ErrorHandling: UIView {
         let newViewWidth = 0
         UIView.animate(withDuration: errorState.animationDuration) {
             self.errorViewStackView.frame = CGRect(x: 0, y: 0, width: newViewWidth, height: newViewWidth)
-            self.errorViewStackView.center = self.contentView.center
+            self.errorViewStackView.center = self.center
         }
     }
     
     func disapperViewAnimation() {
         UIView.animate(withDuration: errorState.disapperingDuration) {
-            self.contentView.isHidden = true
+            self.isHidden = true
         } completion: { _ in
             self.crossButtonTapped()
         }

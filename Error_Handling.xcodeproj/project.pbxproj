@@ -11,8 +11,8 @@
 		84BC94DC2AB32ED90041EAA1 /* Error_Handling.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84BC94D12AB32ED80041EAA1 /* Error_Handling.framework */; };
 		84BC94E12AB32ED90041EAA1 /* Error_HandlingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84BC94E02AB32ED90041EAA1 /* Error_HandlingTests.swift */; };
 		84BC94E22AB32ED90041EAA1 /* Error_Handling.h in Headers */ = {isa = PBXBuildFile; fileRef = 84BC94D42AB32ED80041EAA1 /* Error_Handling.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		84BC94EC2AB32F830041EAA1 /* ErrorHandling.xib in Resources */ = {isa = PBXBuildFile; fileRef = 84BC94EB2AB32F830041EAA1 /* ErrorHandling.xib */; };
 		84BC94EE2AB330070041EAA1 /* Error_Handling.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84BC94ED2AB330070041EAA1 /* Error_Handling.swift */; };
+		84BF8EF32AB37F030074577D /* Error_Handling.xib in Resources */ = {isa = PBXBuildFile; fileRef = 84BF8EF22AB37F030074577D /* Error_Handling.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -31,8 +31,8 @@
 		84BC94D52AB32ED80041EAA1 /* Error_Handling.docc */ = {isa = PBXFileReference; lastKnownFileType = folder.documentationcatalog; path = Error_Handling.docc; sourceTree = "<group>"; };
 		84BC94DB2AB32ED90041EAA1 /* Error_HandlingTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Error_HandlingTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		84BC94E02AB32ED90041EAA1 /* Error_HandlingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Error_HandlingTests.swift; sourceTree = "<group>"; };
-		84BC94EB2AB32F830041EAA1 /* ErrorHandling.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ErrorHandling.xib; sourceTree = "<group>"; };
 		84BC94ED2AB330070041EAA1 /* Error_Handling.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Error_Handling.swift; sourceTree = "<group>"; };
+		84BF8EF22AB37F030074577D /* Error_Handling.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = Error_Handling.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,14 +54,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		84ACD5942AB35A2F007F559D /* Resources */ = {
-			isa = PBXGroup;
-			children = (
-				84BC94EB2AB32F830041EAA1 /* ErrorHandling.xib */,
-			);
-			path = Resources;
-			sourceTree = "<group>";
-		};
 		84BC94C72AB32ED80041EAA1 = {
 			isa = PBXGroup;
 			children = (
@@ -85,8 +77,8 @@
 			children = (
 				84BC94D42AB32ED80041EAA1 /* Error_Handling.h */,
 				84BC94D52AB32ED80041EAA1 /* Error_Handling.docc */,
-				84ACD5942AB35A2F007F559D /* Resources */,
 				84BC94ED2AB330070041EAA1 /* Error_Handling.swift */,
+				84BF8EF22AB37F030074577D /* Error_Handling.xib */,
 			);
 			path = Error_Handling;
 			sourceTree = "<group>";
@@ -191,7 +183,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				84BC94EC2AB32F830041EAA1 /* ErrorHandling.xib in Resources */,
+				84BF8EF32AB37F030074577D /* Error_Handling.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
