@@ -16,7 +16,7 @@ Pod::Spec.new do |spec|
   #
 
   spec.name         = "Error_Handling"
-  spec.version      = "0.0.1"
+  spec.version      = "0.0.2"
   spec.summary      = "A CocoaPods library written in Swift."
 
   # This description is used to generate tags and improve search results.
@@ -92,8 +92,9 @@ This CocoaPods library helps you show custom error view.
   #  Not including the public_header_files will make all headers public.
   #
 
-  spec.source_files  = "Error_Handling", "Error_Handling/**/*.{h,m,swift}"
+  spec.source_files  = "Error_Handling", "Error_Handling/**/*.{h,m,swift,xib}"
   spec.exclude_files = "Classes/Exclude"
+
 
   # spec.public_header_files = "Classes/**/*.h"
 
