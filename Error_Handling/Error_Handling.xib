@@ -10,11 +10,15 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ErrorHandling" customModule="Error_Handling" customModuleProvider="target">
             <connections>
-                <outlet property="contentView" destination="dhy-4B-mJz" id="zuZ-XM-q8J"/>
-                <outlet property="errorViewBottomSpacing" destination="vsO-Xp-2f7" id="udd-DB-Xx0"/>
-                <outlet property="errorViewLeadingSpace" destination="afg-qv-kj6" id="UVl-wt-jSM"/>
-                <outlet property="errorViewTopSpacing" destination="95J-tw-yE9" id="CJD-V7-Nc2"/>
-                <outlet property="errorViewTrailingSpace" destination="RWm-Dd-EZq" id="77O-0V-iPO"/>
+                <outlet property="contentView" destination="dhy-4B-mJz" id="DWf-xi-YcR"/>
+                <outlet property="crossButton" destination="uqK-aE-7fp" id="2t4-LC-mLj"/>
+                <outlet property="errorImageView" destination="fD0-Mi-tu6" id="yVC-qy-i7D"/>
+                <outlet property="errorMessageLabel" destination="y1O-6w-dJV" id="xu1-si-KNJ"/>
+                <outlet property="errorViewBottomSpacing" destination="vsO-Xp-2f7" id="tBa-hT-s1D"/>
+                <outlet property="errorViewLeadingSpace" destination="afg-qv-kj6" id="iYa-mi-jYl"/>
+                <outlet property="errorViewStackView" destination="vNF-8h-GmC" id="qIg-4U-UB4"/>
+                <outlet property="errorViewTopSpacing" destination="95J-tw-yE9" id="JK8-kj-1lX"/>
+                <outlet property="errorViewTrailingSpace" destination="RWm-Dd-EZq" id="At9-Zb-lg2"/>
             </connections>
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
