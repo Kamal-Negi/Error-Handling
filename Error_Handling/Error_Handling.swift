@@ -20,7 +20,7 @@ public struct ErrorState {
         public var disapperingDuration: Double = 5
         public var errorLabelColor: UIColor = .white
         public var errorLabelFont: UIFont = .systemFont(ofSize: 12)
-        public var alignement: ErrorAlignement = .center
+        public var alignement: UIStackView.Alignment = .center
         public var leadingSpace: CGFloat = 8
         public var trailingSpcae: CGFloat = 8
         public var topSpacing: CGFloat = 8
@@ -37,16 +37,11 @@ public enum ErrorType {
     case userInteraction
 }
 
-public enum ErrorAlignement {
-    case top
-    case center
-}
-
 open class ErrorHandling: UIView {
     
     @IBOutlet weak var contentView: UIView!
     
-    @IBOutlet weak var errorViewStackView: UIStackView!
+    @IBOutlet weak var errorStackView: UIStackView!
     
     @IBOutlet weak var errorImageView: UIImageView!
     
@@ -61,6 +56,14 @@ open class ErrorHandling: UIView {
     @IBOutlet weak var errorViewTopSpacing: NSLayoutConstraint!
     
     @IBOutlet weak var errorViewBottomSpacing: NSLayoutConstraint!
+    
+    @IBOutlet weak var imageHeight: NSLayoutConstraint!
+    
+    @IBOutlet weak var imageWidth: NSLayoutConstraint!
+    
+    @IBOutlet weak var crossButtonHeight: NSLayoutConstraint!
+    
+    @IBOutlet weak var crossButtonWidth: NSLayoutConstraint!
     
     public var errorState = ErrorState()
     
@@ -100,6 +103,7 @@ open class ErrorHandling: UIView {
         crossButton.setImage(UIImage(named: errorState.state.crossButtonImage), for: .normal)
         crossButton.addTarget(self, action: #selector(crossButtonTapped), for: .touchUpInside)
         contentView.layer.cornerRadius = errorState.state.cornerRadius
+        errorStackView.alignment = errorState.state.alignement
         
         errorViewLeadingSpace.constant = errorState.state.leadingSpace
         errorViewTrailingSpace.constant = errorState.state.trailingSpcae
@@ -141,5 +145,15 @@ open class ErrorHandling: UIView {
     
     func disapperViewAnimation() {
         crossButtonTapped()
+    }
+    
+    public func setImageSize(width: CGFloat, height: CGFloat) {
+        imageHeight.constant = height
+        imageWidth.constant = width
+    }
+    
+    public func setCrossButtonSize(width: CGFloat, height: CGFloat) {
+        crossButtonHeight.constant = height
+        crossButtonWidth.constant = width
     }
 }
