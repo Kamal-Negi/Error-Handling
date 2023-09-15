@@ -21,6 +21,11 @@ public struct ErrorState {
         public var errorLabelColor: UIColor = .white
         public var errorLabelFont: UIFont = .systemFont(ofSize: 12)
         public var alignement: ErrorAlignement = .center
+        public var leadingSpace: CGFloat = 8
+        public var trailingSpcae: CGFloat = 8
+        public var topSpacing: CGFloat = 8
+        public var bottomSpace: CGFloat = 8
+        public var cornerRadius: CGFloat = 0
     }
     public var state = ErrorViewState()
 }
@@ -39,6 +44,8 @@ public enum ErrorAlignement {
 
 open class ErrorHandling: UIView {
     
+    @IBOutlet weak var contentView: UIView!
+    
     @IBOutlet weak var errorViewStackView: UIStackView!
     
     @IBOutlet weak var errorImageView: UIImageView!
@@ -46,6 +53,14 @@ open class ErrorHandling: UIView {
     @IBOutlet weak var errorMessageLabel: UILabel!
     
     @IBOutlet weak var crossButton: UIButton!
+    
+    @IBOutlet weak var errorViewLeadingSpace: NSLayoutConstraint!
+    
+    @IBOutlet weak var errorViewTrailingSpace: NSLayoutConstraint!
+    
+    @IBOutlet weak var errorViewTopSpacing: NSLayoutConstraint!
+    
+    @IBOutlet weak var errorViewBottomSpacing: NSLayoutConstraint!
     
     public var errorState = ErrorState()
     
@@ -64,14 +79,19 @@ open class ErrorHandling: UIView {
     }
     
     private func commonInit() {
-        let view = Bundle.main.loadNibNamed("Error_Handling", owner: self, options: nil)![0] as! UIView
+        let view = Bundle(for: ErrorHandling.self).loadNibNamed("Error_Handling", owner: self, options: nil)![0] as! UIView
         self.addSubview(view)
         view.frame = self.bounds
         view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        animateErrorView()
+        layoutSubviews()
+        layoutIfNeeded()
     }
     
-    func configureView() {
+    public func configureView() {
+        //animate view on load
+        animateErrorView()
+        
+        //setup inital view
         errorMessageLabel.text = errorState.state.errorMessage
         errorMessageLabel.font = errorState.state.errorLabelFont
         errorMessageLabel.textColor = errorState.state.errorLabelColor
@@ -79,7 +99,30 @@ open class ErrorHandling: UIView {
         crossButton.setTitle("", for: .normal)
         crossButton.setImage(UIImage(named: errorState.state.crossButtonImage), for: .normal)
         crossButton.addTarget(self, action: #selector(crossButtonTapped), for: .touchUpInside)
-        errorViewStackView.backgroundColor = errorState.state.errorViewBackgroundColor
+        contentView.layer.cornerRadius = errorState.state.cornerRadius
+        
+        errorViewLeadingSpace.constant = errorState.state.leadingSpace
+        errorViewTrailingSpace.constant = errorState.state.trailingSpcae
+        errorViewTopSpacing.constant = errorState.state.topSpacing
+        errorViewBottomSpacing.constant = errorState.state.bottomSpace
+        
+        switch errorState.state.errorType {
+        case .persistant:
+            crossButton.isHidden = true
+        case .displayAndDisapper:
+            crossButton.isHidden = true
+            Timer.scheduledTimer(withTimeInterval: errorState.state.disapperingDuration, repeats: false, block: { _ in
+                self.crossButtonTapped()
+            })
+        case .userInteraction:
+            crossButton.isHidden = false
+        }
+        contentView.backgroundColor = errorState.state.errorViewBackgroundColor
+        
+    }
+    
+    public func setState(state: ErrorState) {
+        errorState = state
     }
     
     @objc func crossButtonTapped() {
@@ -89,20 +132,14 @@ open class ErrorHandling: UIView {
     }
     
     func animateErrorView() {
-        let newViewWidth = 0
+        contentView.center = self.center
+        self.contentView.transform = CGAffineTransform(scaleX: 0, y: 0)
         UIView.animate(withDuration: errorState.state.animationDuration) {
-            self.errorViewStackView.frame = CGRect(x: 0, y: 0, width: newViewWidth, height: newViewWidth)
-            self.errorViewStackView.center = self.center
+            self.contentView.transform = CGAffineTransform(scaleX: 1, y: 1)
         }
     }
     
     func disapperViewAnimation() {
-        UIView.animate(withDuration: errorState.state.disapperingDuration) {
-            self.isHidden = true
-        } completion: { _ in
-            self.crossButtonTapped()
-        }
-
+        crossButtonTapped()
     }
-    
 }
