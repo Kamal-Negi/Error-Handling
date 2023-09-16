@@ -8,152 +8,162 @@
 import Foundation
 import UIKit
 
-public struct ErrorState {
-    public struct ErrorViewState {
-        public var errorMessage: String  = ""
-        public var errorViewImage: String = ""
-        public var errorViewBackgroundColor: UIColor = .white
-        public var crossButtonImage: String = ""
-        public var crossButtonAction: (()->())?
-        public var errorType: ErrorType = .displayAndDisapper
-        public var animationDuration: Double = 2
-        public var disapperingDuration: Double = 5
-        public var errorLabelColor: UIColor = .white
-        public var errorLabelFont: UIFont = .systemFont(ofSize: 12)
-        public var alignement: UIStackView.Alignment = .center
-        public var leadingSpace: CGFloat = 8
-        public var trailingSpcae: CGFloat = 8
-        public var topSpacing: CGFloat = 8
-        public var bottomSpace: CGFloat = 8
-        public var cornerRadius: CGFloat = 0
-    }
-    public var state = ErrorViewState()
-}
-
-
 public enum ErrorType {
     case persistant
     case displayAndDisapper
-    case userInteraction
+    case userInteractionRequired
 }
 
-open class ErrorHandling: UIView {
+class Error_Handling: UIView {
     
-    @IBOutlet weak var contentView: UIView!
+    var contentView: UIView = UIView()
     
-    @IBOutlet weak var errorStackView: UIStackView!
+    var parentStack: UIStackView = UIStackView()
     
-    @IBOutlet weak var errorImageView: UIImageView!
+    var stackView: UIStackView = UIStackView()
     
-    @IBOutlet weak var errorMessageLabel: UILabel!
+    var errorImageView: UIImageView = UIImageView()
     
-    @IBOutlet weak var crossButton: UIButton!
+    var errorLabel: UILabel = UILabel()
     
-    @IBOutlet weak var errorViewLeadingSpace: NSLayoutConstraint!
+    var crossButton: UIButton = UIButton()
     
-    @IBOutlet weak var errorViewTrailingSpace: NSLayoutConstraint!
+    public var alignement: UIStackView.Alignment = .center
     
-    @IBOutlet weak var errorViewTopSpacing: NSLayoutConstraint!
+    public var errorImage: String = ""
     
-    @IBOutlet weak var errorViewBottomSpacing: NSLayoutConstraint!
+    public var errorMessage: String = ""
     
-    @IBOutlet weak var imageHeight: NSLayoutConstraint!
+    public var errorMessageTextColor: UIColor = .black
     
-    @IBOutlet weak var imageWidth: NSLayoutConstraint!
+    public var errorMessageFontFamily: UIFont = .systemFont(ofSize: 12)
     
-    @IBOutlet weak var crossButtonHeight: NSLayoutConstraint!
+    public var crossButtonImage: String = ""
     
-    @IBOutlet weak var crossButtonWidth: NSLayoutConstraint!
+    public var viewBackground: UIColor = .white
     
-    public var errorState = ErrorState()
+    public var animationDuration: CGFloat = 2
     
-    public override func awakeFromNib() {
+    public var disappearingAnimationDuration: CGFloat = 2
+    
+    public var crossButtonTap: (() -> ())?
+    
+    public var errorType: ErrorType = .displayAndDisapper
+    
+    override func awakeFromNib() {
         super.awakeFromNib()
     }
     
-    public override init(frame: CGRect) {
+    override init(frame: CGRect) {
         super.init(frame: frame)
        commonInit()
     }
     
-    required public init?(coder aDecoder: NSCoder) {
+    required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         commonInit()
     }
     
     private func commonInit() {
-        let view = Bundle(for: ErrorHandling.self).loadNibNamed("Error_Handling", owner: self, options: nil)![0] as! UIView
-        self.addSubview(view)
-        view.frame = self.bounds
-        view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        contentView.frame = self.bounds
+        contentView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        self.addSubview(contentView)
         layoutSubviews()
         layoutIfNeeded()
+        setupViews()
     }
     
-    public func configureView() {
-        //animate view on load
+    func setupViews() {
+        
+        parentStack.distribution = .fill
+        parentStack.alignment = .center
+        parentStack.axis = .vertical
+        contentView.addSubview(parentStack)
+       
+        //setup Satck View
+        stackView.distribution = .fill
+        stackView.axis = .horizontal
+        stackView.spacing = 8
+        
+        //setup Error Image
+        errorImageView.heightAnchor.constraint(equalToConstant: 16).isActive = true
+        errorImageView.widthAnchor.constraint(equalToConstant: 16).isActive = true
+        stackView.addArrangedSubview(errorImageView)
+
+        //setup Error Label
+        errorLabel.setContentHuggingPriority(UILayoutPriority(251), for: .horizontal)
+        errorLabel.setContentHuggingPriority(UILayoutPriority(251), for: .vertical)
+        stackView.addArrangedSubview(errorLabel)
+        
+        //setup Cross Button
+        crossButton.heightAnchor.constraint(equalToConstant: 18).isActive = true
+        crossButton.widthAnchor.constraint(equalToConstant: 18).isActive = true
+        stackView.addArrangedSubview(crossButton)
+        
+        parentStack.addSubview(stackView)
+        parentStack.translatesAutoresizingMaskIntoConstraints = false
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        
+        NSLayoutConstraint.activate([
+            parentStack.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            parentStack.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+            parentStack.heightAnchor.constraint(equalTo: stackView.heightAnchor, constant: 16),
+            parentStack.widthAnchor.constraint(equalTo: stackView.widthAnchor, constant: 32*2),
+            stackView.topAnchor.constraint(equalTo: parentStack.topAnchor, constant: 8),
+            stackView.bottomAnchor.constraint(equalTo: parentStack.bottomAnchor, constant: 8),
+            stackView.leadingAnchor.constraint(greaterThanOrEqualTo: parentStack.leadingAnchor, constant: 32),
+            stackView.trailingAnchor.constraint(greaterThanOrEqualTo: parentStack.trailingAnchor, constant: 32),
+        ])
+    }
+    
+    func configureView() {
         animateErrorView()
         
-        //setup inital view
-        errorMessageLabel.text = errorState.state.errorMessage
-        errorMessageLabel.font = errorState.state.errorLabelFont
-        errorMessageLabel.textColor = errorState.state.errorLabelColor
-        errorImageView.image = UIImage(named: errorState.state.errorViewImage)
+        stackView.alignment = alignement
+        parentStack.backgroundColor = viewBackground
+        parentStack.layer.cornerRadius = 2
+        errorImageView.image = UIImage(named: errorImage)
+        
+        errorLabel.text = errorMessage
+        errorLabel.textColor = errorMessageTextColor
+        errorLabel.font = errorMessageFontFamily
+        
         crossButton.setTitle("", for: .normal)
-        crossButton.setImage(UIImage(named: errorState.state.crossButtonImage), for: .normal)
-        crossButton.addTarget(self, action: #selector(crossButtonTapped), for: .touchUpInside)
-        contentView.layer.cornerRadius = errorState.state.cornerRadius
-        errorStackView.alignment = errorState.state.alignement
+        crossButton.setImage(UIImage(named: crossButtonImage), for: .normal)
         
-        errorViewLeadingSpace.constant = errorState.state.leadingSpace
-        errorViewTrailingSpace.constant = errorState.state.trailingSpcae
-        errorViewTopSpacing.constant = errorState.state.topSpacing
-        errorViewBottomSpacing.constant = errorState.state.bottomSpace
-        
-        switch errorState.state.errorType {
+        switch errorType {
         case .persistant:
             crossButton.isHidden = true
+            
         case .displayAndDisapper:
-            crossButton.isHidden = true
-            Timer.scheduledTimer(withTimeInterval: errorState.state.disapperingDuration, repeats: false, block: { _ in
-                self.crossButtonTapped()
-            })
-        case .userInteraction:
-            crossButton.isHidden = false
-        }
-        contentView.backgroundColor = errorState.state.errorViewBackgroundColor
-        
-    }
-    
-    public func setState(state: ErrorState) {
-        errorState = state
-    }
-    
-    @objc func crossButtonTapped() {
-        if let crossButtonTap = errorState.state.crossButtonAction {
-            crossButtonTap()
+            Timer.scheduledTimer(withTimeInterval: disappearingAnimationDuration, repeats: false) { _ in
+                self.disapperViewAnimation()
+            }
+            
+        case .userInteractionRequired:
+            crossButton.isHidden = crossButtonImage != "" ? false : true
+            NSLayoutConstraint.activate([
+                stackView.leadingAnchor.constraint(equalTo: parentStack.leadingAnchor, constant: 8),
+                stackView.trailingAnchor.constraint(equalTo: parentStack.trailingAnchor, constant: 8),
+                parentStack.widthAnchor.constraint(equalTo: stackView.widthAnchor, constant: 8*2),
+            ])
         }
     }
     
     func animateErrorView() {
-        contentView.center = self.center
-        self.contentView.transform = CGAffineTransform(scaleX: 0, y: 0)
-        UIView.animate(withDuration: errorState.state.animationDuration) {
-            self.contentView.transform = CGAffineTransform(scaleX: 1, y: 1)
+        self.parentStack.transform = CGAffineTransform(scaleX: 0, y: 0)
+        UIView.animate(withDuration: animationDuration) {
+            self.parentStack.transform = CGAffineTransform(scaleX: 1, y: 1)
+        }
+    }
+    
+    @objc func crossButtonTapped() {
+        if let crossButtonTap = crossButtonTap {
+            crossButtonTap()
         }
     }
     
     func disapperViewAnimation() {
         crossButtonTapped()
-    }
-    
-    public func setImageSize(width: CGFloat, height: CGFloat) {
-        imageHeight.constant = height
-        imageWidth.constant = width
-    }
-    
-    public func setCrossButtonSize(width: CGFloat, height: CGFloat) {
-        crossButtonHeight.constant = height
-        crossButtonWidth.constant = width
     }
 }
