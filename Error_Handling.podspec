@@ -65,11 +65,11 @@ This CocoaPods library helps you show custom error view.
   #
 
   # spec.platform     = :ios
-  # spec.platform     = :ios, "5.0"
+  spec.platform     = :ios, "9.0"
 
   #  When using multiple platforms
-  #spec.ios.deployment_target = "13.0"
-  #spec.swift_version = "4.0"
+  # spec.ios.deployment_target = "13.0"
+  # spec.swift_version = "4.0"
   # spec.osx.deployment_target = "10.7"
   # spec.watchos.deployment_target = "2.0"
   # spec.tvos.deployment_target = "9.0"
@@ -92,7 +92,7 @@ This CocoaPods library helps you show custom error view.
   #  Not including the public_header_files will make all headers public.
   #
 
-  spec.source_files  = "Error_Handling", "Error_Handling/**/*.{h,m,swift,xib}"
+  spec.source_files  = "Error_Handling", "Error_Handling/**/*.{h,swift}"
   spec.exclude_files = "Classes/Exclude"
 
 
@@ -120,7 +120,8 @@ This CocoaPods library helps you show custom error view.
   #
 
   # spec.framework  = "SomeFramework"
-  # spec.frameworks = "SomeFramework", "AnotherFramework"
+  spec.frameworks   = 'UIKit', 'Foundation'
+  spec.swift_version = '5.0'
 
   # spec.library   = "iconv"
   # spec.libraries = "iconv", "xml2"
