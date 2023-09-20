@@ -18,15 +18,22 @@ class Error_Handling: UIView {
     
     var contentView: UIView = UIView()
     
-    var parentStack: UIStackView = UIStackView()
+    var parentView: UIView = UIView()
     
-    var stackView: UIStackView = UIStackView()
+    var stackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.alignment = .center
+        stackView.distribution = .fill
+        stackView.spacing = 8
+        stackView.axis = .horizontal
+        return stackView
+    } ()
     
     var errorImageView: UIImageView = UIImageView()
     
     var errorLabel: UILabel = UILabel()
     
-    var crossButton: UIButton = UIButton()
+    var crossButton: UIButton = UIButton(type: .custom)
     
     public var alignement: UIStackView.Alignment = .center
     
@@ -50,41 +57,32 @@ class Error_Handling: UIView {
     
     public var errorType: ErrorType = .displayAndDisapper
     
-    override func awakeFromNib() {
+    public override func awakeFromNib() {
         super.awakeFromNib()
     }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-       commonInit()
+        commonInit()
     }
     
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
         commonInit()
     }
     
     private func commonInit() {
-        contentView.frame = self.bounds
-        contentView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        self.addSubview(contentView)
-        layoutSubviews()
-        layoutIfNeeded()
         setupViews()
     }
     
+
+    
     func setupViews() {
-        
-        parentStack.distribution = .fill
-        parentStack.alignment = .center
-        parentStack.axis = .vertical
-        contentView.addSubview(parentStack)
-       
-        //setup Satck View
-        stackView.distribution = .fill
-        stackView.axis = .horizontal
-        stackView.spacing = 8
-        
+        //setup Content View
+        contentView.frame = CGRect(x: 0, y: 70, width: self.frame.width, height: self.frame.height)
+        contentView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        self.addSubview(contentView)
+
         //setup Error Image
         errorImageView.heightAnchor.constraint(equalToConstant: 16).isActive = true
         errorImageView.widthAnchor.constraint(equalToConstant: 16).isActive = true
@@ -93,35 +91,46 @@ class Error_Handling: UIView {
         //setup Error Label
         errorLabel.setContentHuggingPriority(UILayoutPriority(251), for: .horizontal)
         errorLabel.setContentHuggingPriority(UILayoutPriority(251), for: .vertical)
+        errorLabel.numberOfLines = 0
         stackView.addArrangedSubview(errorLabel)
-        
+
         //setup Cross Button
         crossButton.heightAnchor.constraint(equalToConstant: 18).isActive = true
         crossButton.widthAnchor.constraint(equalToConstant: 18).isActive = true
         stackView.addArrangedSubview(crossButton)
+
+        contentView.addSubview(parentView)
+        parentView.addSubview(stackView)
         
-        parentStack.addSubview(stackView)
-        parentStack.translatesAutoresizingMaskIntoConstraints = false
         stackView.translatesAutoresizingMaskIntoConstraints = false
+        parentView.translatesAutoresizingMaskIntoConstraints = false
+        contentView.translatesAutoresizingMaskIntoConstraints = false
+    
+        //added the constraint
         
         NSLayoutConstraint.activate([
-            parentStack.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-            parentStack.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
-            parentStack.heightAnchor.constraint(equalTo: stackView.heightAnchor, constant: 16),
-            parentStack.widthAnchor.constraint(equalTo: stackView.widthAnchor, constant: 32*2),
-            stackView.topAnchor.constraint(equalTo: parentStack.topAnchor, constant: 8),
-            stackView.bottomAnchor.constraint(equalTo: parentStack.bottomAnchor, constant: 8),
-            stackView.leadingAnchor.constraint(greaterThanOrEqualTo: parentStack.leadingAnchor, constant: 32),
-            stackView.trailingAnchor.constraint(greaterThanOrEqualTo: parentStack.trailingAnchor, constant: 32),
+            contentView.centerXAnchor.constraint(equalTo: self.centerXAnchor),
+            parentView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 8),
+            parentView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -8),
+            parentView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            parentView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+            parentView.leadingAnchor.constraint(greaterThanOrEqualTo: contentView.leadingAnchor, constant: 16),
+            parentView.trailingAnchor.constraint(greaterThanOrEqualTo: contentView.trailingAnchor, constant: -16),
+            stackView.centerXAnchor.constraint(equalTo: parentView.centerXAnchor),
+            stackView.centerYAnchor.constraint(equalTo: parentView.centerYAnchor),
+            stackView.topAnchor.constraint(equalTo: parentView.topAnchor, constant: 8),
+            stackView.bottomAnchor.constraint(equalTo: parentView.bottomAnchor, constant: -8),
+            stackView.leadingAnchor.constraint(lessThanOrEqualTo: parentView.leadingAnchor, constant: 32),
+            stackView.trailingAnchor.constraint(lessThanOrEqualTo: parentView.trailingAnchor, constant: -32)
         ])
     }
     
-    func configureView() {
+    public func configureView() {
         animateErrorView()
         
         stackView.alignment = alignement
-        parentStack.backgroundColor = viewBackground
-        parentStack.layer.cornerRadius = 2
+        parentView.backgroundColor = viewBackground
+        parentView.layer.cornerRadius = 2
         errorImageView.image = UIImage(named: errorImage)
         
         errorLabel.text = errorMessage
@@ -131,29 +140,27 @@ class Error_Handling: UIView {
         crossButton.setTitle("", for: .normal)
         crossButton.setImage(UIImage(named: crossButtonImage), for: .normal)
         
+        crossButton.addTarget(self, action: #selector(crossButtonTapped), for: .touchUpInside)
+        
         switch errorType {
         case .persistant:
             crossButton.isHidden = true
             
         case .displayAndDisapper:
+            crossButton.isHidden = true
             Timer.scheduledTimer(withTimeInterval: disappearingAnimationDuration, repeats: false) { _ in
                 self.disapperViewAnimation()
             }
             
         case .userInteractionRequired:
             crossButton.isHidden = crossButtonImage != "" ? false : true
-            NSLayoutConstraint.activate([
-                stackView.leadingAnchor.constraint(equalTo: parentStack.leadingAnchor, constant: 8),
-                stackView.trailingAnchor.constraint(equalTo: parentStack.trailingAnchor, constant: 8),
-                parentStack.widthAnchor.constraint(equalTo: stackView.widthAnchor, constant: 8*2),
-            ])
         }
     }
     
     func animateErrorView() {
-        self.parentStack.transform = CGAffineTransform(scaleX: 0, y: 0)
+        self.contentView.transform = CGAffineTransform(scaleX: 0, y: 0)
         UIView.animate(withDuration: animationDuration) {
-            self.parentStack.transform = CGAffineTransform(scaleX: 1, y: 1)
+            self.contentView.transform = CGAffineTransform(scaleX: 1, y: 1)
         }
     }
     
