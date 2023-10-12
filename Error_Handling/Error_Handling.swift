@@ -10,17 +10,17 @@ import UIKit
 
 public enum ErrorType {
     case persistant
-    case displayAndDisapper
+    case displayAndDisappear
     case userInteractionRequired
 }
 
-class Error_Handling: UIView {
+open class Error_Handling: UIView {
     
-    var contentView: UIView = UIView()
+    private var contentView: UIView = UIView()
     
-    var parentView: UIView = UIView()
+    private var parentView: UIView = UIView()
     
-    var stackView: UIStackView = {
+    private var stackView: UIStackView = {
         let stackView = UIStackView()
         stackView.alignment = .center
         stackView.distribution = .fill
@@ -29,11 +29,11 @@ class Error_Handling: UIView {
         return stackView
     } ()
     
-    var errorImageView: UIImageView = UIImageView()
+    private var errorImageView: UIImageView = UIImageView()
     
-    var errorLabel: UILabel = UILabel()
+    private var errorLabel: UILabel = UILabel()
     
-    var crossButton: UIButton = UIButton(type: .custom)
+    private var crossButton: UIButton = UIButton(type: .custom)
     
     public var alignement: UIStackView.Alignment = .center
     
@@ -43,30 +43,30 @@ class Error_Handling: UIView {
     
     public var errorMessageTextColor: UIColor = .black
     
-    public var errorMessageFontFamily: UIFont = .systemFont(ofSize: 12)
+    public var errorMessageFont: UIFont = .systemFont(ofSize: 12)
     
     public var crossButtonImage: String = ""
     
     public var viewBackground: UIColor = .white
     
-    public var animationDuration: CGFloat = 2
+    public var appearingAnimationDuration: CGFloat = 2
     
     public var disappearingAnimationDuration: CGFloat = 2
     
     public var crossButtonTap: (() -> ())?
     
-    public var errorType: ErrorType = .displayAndDisapper
+    public var errorType: ErrorType = .persistant
     
     public override func awakeFromNib() {
         super.awakeFromNib()
     }
     
-    override init(frame: CGRect) {
+    override public init(frame: CGRect) {
         super.init(frame: frame)
         commonInit()
     }
     
-    required init?(coder: NSCoder) {
+    required public init?(coder: NSCoder) {
         super.init(coder: coder)
         commonInit()
     }
@@ -75,9 +75,7 @@ class Error_Handling: UIView {
         setupViews()
     }
     
-
-    
-    func setupViews() {
+    private func setupViews() {
         //setup Content View
         contentView.frame = CGRect(x: 0, y: 70, width: self.frame.width, height: self.frame.height)
         contentView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
@@ -110,8 +108,8 @@ class Error_Handling: UIView {
         
         NSLayoutConstraint.activate([
             contentView.centerXAnchor.constraint(equalTo: self.centerXAnchor),
-            parentView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 8),
-            parentView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -8),
+            parentView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 0),
+            parentView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: 0),
             parentView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
             parentView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
             parentView.leadingAnchor.constraint(greaterThanOrEqualTo: contentView.leadingAnchor, constant: 16),
@@ -135,7 +133,7 @@ class Error_Handling: UIView {
         
         errorLabel.text = errorMessage
         errorLabel.textColor = errorMessageTextColor
-        errorLabel.font = errorMessageFontFamily
+        errorLabel.font = errorMessageFont
         
         crossButton.setTitle("", for: .normal)
         crossButton.setImage(UIImage(named: crossButtonImage), for: .normal)
@@ -146,10 +144,10 @@ class Error_Handling: UIView {
         case .persistant:
             crossButton.isHidden = true
             
-        case .displayAndDisapper:
+        case .displayAndDisappear:
             crossButton.isHidden = true
             Timer.scheduledTimer(withTimeInterval: disappearingAnimationDuration, repeats: false) { _ in
-                self.disapperViewAnimation()
+                self.disappearingViewAnimation()
             }
             
         case .userInteractionRequired:
@@ -157,20 +155,20 @@ class Error_Handling: UIView {
         }
     }
     
-    func animateErrorView() {
+    private func animateErrorView() {
         self.contentView.transform = CGAffineTransform(scaleX: 0, y: 0)
-        UIView.animate(withDuration: animationDuration) {
+        UIView.animate(withDuration: appearingAnimationDuration) {
             self.contentView.transform = CGAffineTransform(scaleX: 1, y: 1)
         }
     }
     
-    @objc func crossButtonTapped() {
+    @objc private func crossButtonTapped() {
         if let crossButtonTap = crossButtonTap {
             crossButtonTap()
         }
     }
     
-    func disapperViewAnimation() {
+    private func disappearingViewAnimation() {
         crossButtonTapped()
     }
 }
