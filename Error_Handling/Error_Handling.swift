@@ -10,17 +10,27 @@ import UIKit
 
 public enum ErrorType {
     case persistant
-    case displayAndDisappear
+    case displayAndDisapper
     case userInteractionRequired
+    case none
 }
 
 open class Error_Handling: UIView {
     
-    private var contentView: UIView = UIView()
+    var contentView: UIView = UIView()
     
-    private var parentView: UIView = UIView()
+    var parentView: UIView = UIView()
     
-    private var stackView: UIStackView = {
+    var parentStackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.alignment = .top
+        stackView.distribution = .fill
+        stackView.spacing = 0
+        stackView.axis = .horizontal
+        return stackView
+    } ()
+    
+    var stackView: UIStackView = {
         let stackView = UIStackView()
         stackView.alignment = .center
         stackView.distribution = .fill
@@ -29,11 +39,11 @@ open class Error_Handling: UIView {
         return stackView
     } ()
     
-    private var errorImageView: UIImageView = UIImageView()
+    var errorImageView: UIImageView = UIImageView()
     
-    private var errorLabel: UILabel = UILabel()
+    var errorLabel: UILabel = UILabel()
     
-    private var crossButton: UIButton = UIButton(type: .custom)
+    var crossButton: UIButton = UIButton(type: .custom)
     
     public var alignement: UIStackView.Alignment = .center
     
@@ -43,19 +53,19 @@ open class Error_Handling: UIView {
     
     public var errorMessageTextColor: UIColor = .black
     
-    public var errorMessageFont: UIFont = .systemFont(ofSize: 12)
+    public var errorMessageFontFamily: UIFont = .systemFont(ofSize: 12)
     
     public var crossButtonImage: String = ""
     
     public var viewBackground: UIColor = .white
     
-    public var appearingAnimationDuration: CGFloat = 2
+    public var animationDuration: CGFloat = 2
     
     public var disappearingAnimationDuration: CGFloat = 2
     
     public var crossButtonTap: (() -> ())?
     
-    public var errorType: ErrorType = .persistant
+    public var errorType: ErrorType = .displayAndDisapper
     
     public override func awakeFromNib() {
         super.awakeFromNib()
@@ -75,11 +85,11 @@ open class Error_Handling: UIView {
         setupViews()
     }
     
-    private func setupViews() {
+    func setupViews() {
         //setup Content View
-        contentView.frame = CGRect(x: 0, y: 70, width: self.frame.width, height: self.frame.height)
+//        contentView.frame = CGRect(x: 0, y: 70, width: self.frame.width, height: self.frame.height)
+        contentView.frame = self.frame
         contentView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        self.addSubview(contentView)
 
         //setup Error Image
         errorImageView.heightAnchor.constraint(equalToConstant: 16).isActive = true
@@ -96,44 +106,51 @@ open class Error_Handling: UIView {
         crossButton.heightAnchor.constraint(equalToConstant: 18).isActive = true
         crossButton.widthAnchor.constraint(equalToConstant: 18).isActive = true
         stackView.addArrangedSubview(crossButton)
-
-        contentView.addSubview(parentView)
-        parentView.addSubview(stackView)
         
-        stackView.translatesAutoresizingMaskIntoConstraints = false
+        parentStackView.translatesAutoresizingMaskIntoConstraints = false
         parentView.translatesAutoresizingMaskIntoConstraints = false
         contentView.translatesAutoresizingMaskIntoConstraints = false
-    
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        
+        self.addSubview(contentView)
+        contentView.addSubview(parentView)
+        parentView.addSubview(parentStackView)
+        parentStackView.addSubview(stackView)
+        
         //added the constraint
         
         NSLayoutConstraint.activate([
-            contentView.centerXAnchor.constraint(equalTo: self.centerXAnchor),
+            contentView.centerXAnchor.constraint(equalTo: self.centerXAnchor, constant: 0),
+            contentView.topAnchor.constraint(equalTo: self.topAnchor, constant: 0),
+            contentView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: 0),
+            contentView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 0),
+            contentView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: 0),
+            parentView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor, constant: 0),
             parentView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 0),
-            parentView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: 0),
-            parentView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-            parentView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
-            parentView.leadingAnchor.constraint(greaterThanOrEqualTo: contentView.leadingAnchor, constant: 16),
-            parentView.trailingAnchor.constraint(greaterThanOrEqualTo: contentView.trailingAnchor, constant: -16),
-            stackView.centerXAnchor.constraint(equalTo: parentView.centerXAnchor),
-            stackView.centerYAnchor.constraint(equalTo: parentView.centerYAnchor),
-            stackView.topAnchor.constraint(equalTo: parentView.topAnchor, constant: 8),
-            stackView.bottomAnchor.constraint(equalTo: parentView.bottomAnchor, constant: -8),
-            stackView.leadingAnchor.constraint(lessThanOrEqualTo: parentView.leadingAnchor, constant: 32),
-            stackView.trailingAnchor.constraint(lessThanOrEqualTo: parentView.trailingAnchor, constant: -32)
+            parentView.leadingAnchor.constraint(greaterThanOrEqualTo: contentView.leadingAnchor, constant: 0),
+            parentView.trailingAnchor.constraint(lessThanOrEqualTo: contentView.trailingAnchor, constant: 0),
+            parentStackView.topAnchor.constraint(equalTo: parentView.topAnchor, constant: 8),
+            parentStackView.bottomAnchor.constraint(equalTo: parentView.bottomAnchor, constant: -8),
+            parentStackView.leadingAnchor.constraint(equalTo: parentView.leadingAnchor, constant: 8),
+            parentStackView.trailingAnchor.constraint(equalTo: parentView.trailingAnchor, constant: -8),
+            stackView.topAnchor.constraint(equalTo: parentStackView.topAnchor, constant: 0),
+            stackView.bottomAnchor.constraint(equalTo: parentStackView.bottomAnchor, constant: 0),
+            stackView.leadingAnchor.constraint(equalTo: parentStackView.leadingAnchor, constant: 0),
+            stackView.trailingAnchor.constraint(equalTo: parentStackView.trailingAnchor, constant: 0)
         ])
     }
     
     public func configureView() {
         animateErrorView()
         
-        stackView.alignment = alignement
+        parentStackView.alignment = alignement
         parentView.backgroundColor = viewBackground
         parentView.layer.cornerRadius = 2
         errorImageView.image = UIImage(named: errorImage)
         
         errorLabel.text = errorMessage
         errorLabel.textColor = errorMessageTextColor
-        errorLabel.font = errorMessageFont
+        errorLabel.font = errorMessageFontFamily
         
         crossButton.setTitle("", for: .normal)
         crossButton.setImage(UIImage(named: crossButtonImage), for: .normal)
@@ -144,31 +161,34 @@ open class Error_Handling: UIView {
         case .persistant:
             crossButton.isHidden = true
             
-        case .displayAndDisappear:
+        case .displayAndDisapper:
             crossButton.isHidden = true
             Timer.scheduledTimer(withTimeInterval: disappearingAnimationDuration, repeats: false) { _ in
-                self.disappearingViewAnimation()
+                self.disapperViewAnimation()
             }
             
         case .userInteractionRequired:
             crossButton.isHidden = crossButtonImage != "" ? false : true
+        case .none:
+            break
         }
     }
     
-    private func animateErrorView() {
+    func animateErrorView() {
         self.contentView.transform = CGAffineTransform(scaleX: 0, y: 0)
-        UIView.animate(withDuration: appearingAnimationDuration) {
+        UIView.animate(withDuration: animationDuration) {
             self.contentView.transform = CGAffineTransform(scaleX: 1, y: 1)
         }
     }
     
-    @objc private func crossButtonTapped() {
+    @objc func crossButtonTapped() {
         if let crossButtonTap = crossButtonTap {
             crossButtonTap()
         }
     }
     
-    private func disappearingViewAnimation() {
+    func disapperViewAnimation() {
         crossButtonTapped()
     }
 }
+
