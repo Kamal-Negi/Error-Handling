@@ -143,7 +143,7 @@ open class Error_Handling: UIView {
     public func configureView() {
         animateErrorView()
         
-        parentStackView.alignment = alignement
+        stackView.alignment = alignement
         parentView.backgroundColor = viewBackground
         parentView.layer.cornerRadius = 2
         errorImageView.image = UIImage(named: errorImage)
