@@ -100,6 +100,7 @@ open class Error_Handling: UIView {
         errorLabel.setContentHuggingPriority(UILayoutPriority(251), for: .horizontal)
         errorLabel.setContentHuggingPriority(UILayoutPriority(251), for: .vertical)
         errorLabel.numberOfLines = 0
+        errorLabel.lineBreakMode = .byCharWrapping
         stackView.addArrangedSubview(errorLabel)
 
         //setup Cross Button
