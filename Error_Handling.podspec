@@ -19,6 +19,6 @@ This CocoaPods library helps you show custom error view.
   spec.exclude_files = "Classes/Exclude"
 
   spec.frameworks   = 'UIKit', 'Foundation'
-  spec.swift_version = '5.0'
+  spec.swift_version = '4.0'
 
 end
